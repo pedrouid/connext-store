@@ -1,13 +1,4 @@
 import {
-  arrayify,
-  hexlify,
-  keccak256,
-  toUtf8Bytes,
-  toUtf8String,
-  safeJsonStringify,
-  safeJsonParse
-} from "./utils";
-import {
   DEFAULT_STORE_PREFIX,
   DEFAULT_STORE_SEPARATOR,
   PATH_CHANNEL,
@@ -15,18 +6,27 @@ import {
 } from "./constants";
 import * as defaultStore from "./local";
 import {
-  StorePair,
-  StoreFactoryOptions,
+  InternalStore,
   PisaClient,
-  Wallet,
-  InternalStore
+  StoreFactoryOptions,
+  StorePair,
+  Wallet
 } from "./types";
+import {
+  arrayify,
+  hexlify,
+  keccak256,
+  safeJsonParse,
+  safeJsonStringify,
+  toUtf8Bytes,
+  toUtf8String
+} from "./utils";
 
 export const defaultStoreOptions = {
+  pisaClient: null,
   prefix: DEFAULT_STORE_PREFIX,
   separator: DEFAULT_STORE_SEPARATOR,
   store: defaultStore,
-  pisaClient: null,
   wallet: null
 };
 
@@ -47,12 +47,13 @@ export class ConnextStore {
 
   public async get(path: string) {
     const raw = this.store.getItem(`${path}`);
-    return this.getPartialMatches(path) || raw;
+    const partialMatches = await this.getPartialMatches(path);
+    return partialMatches || raw;
   }
 
   public async set(pairs: StorePair[], shouldBackup?: boolean) {
     for (const pair of pairs) {
-      this.store.setItem(pair.path, pair.value);
+      await this.store.setItem(pair.path, pair.value);
 
       if (
         shouldBackup &&
@@ -66,25 +67,26 @@ export class ConnextStore {
     }
   }
 
-  public async reset() {
+  public async reset(): Promise<void> {
     // TODO: Should we also scrub legacy channel prefixes?
     const channelPrefix = `${this.prefix}${this.separator}`;
     // get all keys in local storage that match prefix
-    this.store.getEntries().forEach(([key, value]) => {
+    const entries = await this.store.getEntries();
+    entries.forEach(([key, value]: [string, any]) => {
       if (key.includes(channelPrefix)) {
         localStorage.removeItem(key);
       }
     });
   }
 
-  public async restore() {
+  public async restore(): Promise<any[]> {
     return this.pisaClient ? await this.pisaRestore() : [];
   }
 
   ///////////////////////////////////////////////
   ///// PRIVATE METHODS
 
-  private getPartialMatches(path: string) {
+  private async getPartialMatches(path: string) {
     // Handle partial matches so the following line works -.-
     // https://github.com/counterfactual/monorepo/blob/master/packages/node/src/store.ts#L54
     if (
@@ -92,10 +94,11 @@ export class ConnextStore {
       path.endsWith(PATH_PROPOSED_APP_INSTANCE_ID)
     ) {
       const partialMatches = {};
-      for (const k of this.store.getKeys()) {
-        const _path = `${path}${this.separator}`;
-        if (k.includes(_path)) {
-          partialMatches[k.replace(_path, "")] = this.store.getItem(k);
+      const keys = await this.store.getKeys();
+      for (const k of keys) {
+        const pathToFind = `${path}${this.separator}`;
+        if (k.includes(pathToFind)) {
+          partialMatches[k.replace(pathToFind, "")] = this.store.getItem(k);
         }
       }
       return partialMatches;
@@ -113,12 +116,13 @@ export class ConnextStore {
     return this.wallet;
   }
 
-  private getWalletSigner() {
+  private getWalletSigner(): (digest: any) => Promise<string> {
     const wallet = this.getWallet();
-    return (digest: any) => wallet.signMessage(arrayify(digest));
+    return (digest: any): Promise<string> =>
+      wallet.signMessage(arrayify(digest));
   }
 
-  private getWalletAddress() {
+  private getWalletAddress(): string {
     const wallet = this.getWallet();
     return wallet.address;
   }
@@ -138,16 +142,18 @@ export class ConnextStore {
     return this.pisaClient;
   }
 
-  private async pisaRestore() {
+  private async pisaRestore(): Promise<any[]> {
     const pisaClient = this.getPisaClient();
     const signer = this.getWalletSigner();
     const address = this.getWalletAddress();
     const blockNumber = await this.getBlockNumber();
     const backupState = await pisaClient.restore(signer, address, blockNumber);
-    return backupState.map(b => safeJsonParse(toUtf8String(arrayify(b.data))));
+    return backupState.map((b: any) =>
+      safeJsonParse(toUtf8String(arrayify(b.data)))
+    );
   }
 
-  private async pisaBackup(pair: StorePair) {
+  private async pisaBackup(pair: StorePair): Promise<void> {
     const pisaClient = this.getPisaClient();
     const signer = this.getWalletSigner();
     const address = this.getWalletAddress();

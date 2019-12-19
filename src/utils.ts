@@ -6,7 +6,7 @@ export {
   toUtf8String
 } from "ethers/utils";
 
-export function safeJsonParse(value: any) {
+export function safeJsonParse(value: any): any {
   try {
     return JSON.parse(value);
   } catch {
@@ -14,6 +14,6 @@ export function safeJsonParse(value: any) {
   }
 }
 
-export function safeJsonStringify(value: any) {
+export function safeJsonStringify(value: any): string {
   return typeof value === "string" ? value : JSON.stringify(value);
 }

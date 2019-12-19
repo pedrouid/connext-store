@@ -9,19 +9,21 @@ export interface StorePair {
   value: any;
 }
 
+export type Signer = (digest: any) => Promise<string>;
+
 export interface InternalStore {
-  verifyStore(): void;
-  getStore(): Storage;
-  getItem(path: string): string | null;
-  setItem(path: string, value: any): void;
-  getKeys(): string[];
-  getEntries(): [string, any][];
+  verifyStore(): Promise<void>;
+  getStore(): Promise<Storage>;
+  getItem(path: string): Promise<string | null>;
+  setItem(path: string, value: any): Promise<void>;
+  getKeys(): Promise<string[]>;
+  getEntries(): Promise<[string, any][]>;
 }
 
 export interface StoreFactoryOptions {
+  pisaClient?: IPisaClient | null;
   prefix?: string;
   separator?: string;
   store?: InternalStore;
-  pisaClient?: IPisaClient | null;
   wallet?: Wallet | null;
 }
