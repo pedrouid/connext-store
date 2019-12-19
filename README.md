@@ -2,7 +2,7 @@
 
 Connext Store Modules
 
-## Install
+## Install
 
 Install NPM package in your project
 
