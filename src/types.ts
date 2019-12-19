@@ -9,6 +9,15 @@ export interface StorePair {
   value: any;
 }
 
+export interface InternalStore {
+  verifyStore(): void;
+  getStore(): Storage;
+  getItem(path: string): string | null;
+  setItem(path: string, value: any): void;
+  getKeys(): string[];
+  getEntries(): [string, any][];
+}
+
 export interface StoreFactoryOptions {
   prefix: string;
   separator: string;

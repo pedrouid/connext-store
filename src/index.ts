@@ -13,12 +13,19 @@ import {
   PATH_CHANNEL,
   PATH_PROPOSED_APP_INSTANCE_ID
 } from "./constants";
-import { getItem, setItem, getKeys, getEntries } from "./local";
-import { StorePair, StoreFactoryOptions, PisaClient, Wallet } from "./types";
+import * as defaultStore from "./local";
+import {
+  StorePair,
+  StoreFactoryOptions,
+  PisaClient,
+  Wallet,
+  InternalStore
+} from "./types";
 
 export const defaultStoreOptions = {
   prefix: DEFAULT_STORE_PREFIX,
   separator: DEFAULT_STORE_SEPARATOR,
+  store: defaultStore,
   pisaClient: null,
   wallet: null
 };
@@ -26,24 +33,25 @@ export const defaultStoreOptions = {
 export class ConnextStore {
   private prefix: string = DEFAULT_STORE_PREFIX;
   private separator: string = DEFAULT_STORE_SEPARATOR;
+  private store: InternalStore = defaultStore;
   private pisaClient: PisaClient | null;
   private wallet: Wallet | null;
 
   constructor(opts: StoreFactoryOptions = defaultStoreOptions) {
-    this.prefix = opts.prefix;
-    this.separator = opts.separator;
-    this.pisaClient = opts.pisaClient;
-    this.wallet = opts.wallet;
+    this.prefix = opts.prefix || defaultStoreOptions.prefix;
+    this.separator = opts.separator || defaultStoreOptions.separator;
+    this.pisaClient = opts.pisaClient || defaultStoreOptions.pisaClient;
+    this.wallet = opts.wallet || defaultStoreOptions.wallet;
   }
 
   public async get(path: string) {
-    const raw = getItem(`${path}`);
+    const raw = this.store.getItem(`${path}`);
     return this.getPartialMatches(path) || raw;
   }
 
   public async set(pairs: StorePair[], shouldBackup?: boolean) {
     for (const pair of pairs) {
-      setItem(pair.path, pair.value);
+      this.store.setItem(pair.path, pair.value);
 
       if (
         shouldBackup &&
@@ -61,7 +69,7 @@ export class ConnextStore {
     // TODO: Should we also scrub legacy channel prefixes?
     const channelPrefix = `${this.prefix}${this.separator}`;
     // get all keys in local storage that match prefix
-    getEntries().forEach(([key, value]) => {
+    this.store.getEntries().forEach(([key, value]) => {
       if (key.includes(channelPrefix)) {
         localStorage.removeItem(key);
       }
@@ -83,11 +91,10 @@ export class ConnextStore {
       path.endsWith(PATH_PROPOSED_APP_INSTANCE_ID)
     ) {
       const partialMatches = {};
-      for (const k of getKeys()) {
-        if (k.includes(`${path}${this.separator}`)) {
-          partialMatches[k.replace(`${path}${this.separator}`, "")] = getItem(
-            k
-          );
+      for (const k of this.store.getKeys()) {
+        const _path = `${path}${this.separator}`;
+        if (k.includes(_path)) {
+          partialMatches[k.replace(_path, "")] = this.store.getItem(k);
         }
       }
       return partialMatches;
