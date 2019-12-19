@@ -1,23 +1,27 @@
-const path = require("path");
-const pkg = require("./package.json");
+const path = require('path')
+const pkg = require('./package.json')
 
 module.exports = {
-  mode: "production",
+  mode: 'production',
   entry: {
-    index: "./src/index.ts"
+    index: './src/index.ts'
   },
   output: {
-    path: path.resolve(__dirname, "lib"),
-    filename: "[name].js",
-    libraryTarget: "umd",
+    path: path.resolve(__dirname, 'lib'),
+    filename: '[name].js',
+    libraryTarget: 'umd',
     library: pkg.name,
-    umdNamedDefine: true
+    umdNamedDefine: true,
+    globalObject: 'this'
   },
   resolve: {
-    extensions: [".ts", ".tsx", ".js"]
+    extensions: ['.ts', '.tsx', '.js']
   },
-  devtool: "source-map",
+  devtool: 'source-map',
+  optimization: {
+    minimize: true
+  },
   module: {
-    rules: [{ test: /\.tsx?$/, loader: "ts-loader" }]
+    rules: [{ test: /\.tsx?$/, loader: 'ts-loader' }]
   }
-};
+}

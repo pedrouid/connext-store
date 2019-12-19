@@ -1,1 +1,1 @@
-declare module "connext-store";
+declare module 'connext-store'
