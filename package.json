@@ -53,7 +53,7 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
-    "ethers": "^4.0.40",
-    "pisa-client": "^0.1.4-connext-beta.1"
+    "ethers": "4.0.40",
+    "pisa-client": "0.1.4-connext-beta.1"
   }
 }
