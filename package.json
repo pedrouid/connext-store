@@ -1,0 +1,59 @@
+{
+  "name": "eth-parse-uri",
+  "version": "0.9.0",
+  "description": "Parse Ethereum EIP831 Standard URI Format",
+  "scripts": {
+    "clean": "rm -rf lib",
+    "build": "webpack",
+    "test": "mocha --require ./babel-polyfill.js test/**/*.spec.ts",
+    "check": "npm run clean && npm run build && npm run test"
+  },
+  "keywords": [
+    "ethereum",
+    "parser",
+    "uri",
+    "standard"
+  ],
+  "author": "Pedro Gomes <github.com/pedrouid>",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pedrouid/eth-parse-uri.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pedrouid/eth-parse-uri/issues"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/node": "^7.0.0",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-typescript": "^7.1.0",
+    "@babel/register": "^7.0.0",
+    "@types/chai": "^4.1.6",
+    "@types/mocha": "^5.2.5",
+    "@types/qr-image": "^3.2.1",
+    "chai": "^4.1.2",
+    "isomorphic-fetch": "^2.2.1",
+    "mocha": "5.2.0",
+    "terser": "^3.14.1",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.7.3",
+    "webpack": "^4.28.3",
+    "webpack-cli": "^3.2.1"
+  },
+  "dependencies": {
+    "ethers": "^4.0.40",
+    "pisa-client": "^0.1.4-connext-beta.1"
+  }
+}
