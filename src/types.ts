@@ -19,8 +19,9 @@ export interface InternalStore {
 }
 
 export interface StoreFactoryOptions {
-  prefix: string;
-  separator: string;
-  pisaClient: IPisaClient | null;
-  wallet: Wallet | null;
+  prefix?: string;
+  separator?: string;
+  store?: InternalStore;
+  pisaClient?: IPisaClient | null;
+  wallet?: Wallet | null;
 }
