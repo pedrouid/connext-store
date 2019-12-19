@@ -1,5 +1,6 @@
 import { ethers } from 'ethers'
 import { PisaClient as IPisaClient } from 'pisa-client'
+import Storage from 'react-native-storage'
 
 export type PisaClient = IPisaClient
 export type Wallet = ethers.Wallet
