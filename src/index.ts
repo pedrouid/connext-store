@@ -1,3 +1,4 @@
+import Storage from 'react-native-storage'
 import {
   DEFAULT_STORE_PREFIX,
   DEFAULT_STORE_SEPARATOR,
@@ -24,13 +25,15 @@ export class ConnextStore {
   private pisaClient: PisaClient | null = null
   private wallet: Wallet | null = null
 
-  constructor (opts: StoreFactoryOptions) {
-    this.store = new InternalStore(opts.storage)
+  constructor (storage: Storage, opts?: StoreFactoryOptions) {
+    this.store = new InternalStore(storage)
 
-    this.prefix = opts.prefix || DEFAULT_STORE_PREFIX
-    this.separator = opts.separator || DEFAULT_STORE_SEPARATOR
-    this.pisaClient = opts.pisaClient || null
-    this.wallet = opts.wallet || null
+    if (opts) {
+      this.prefix = opts.prefix || DEFAULT_STORE_PREFIX
+      this.separator = opts.separator || DEFAULT_STORE_SEPARATOR
+      this.pisaClient = opts.pisaClient || null
+      this.wallet = opts.wallet || null
+    }
   }
 
   public async get (path: string) {

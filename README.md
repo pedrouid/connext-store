@@ -17,9 +17,7 @@ For Browsers
 ```javascript
 import ConnextStore from "connext-store";
 
-const store = new ConnextStore({
-  storage: window.localStorage
-});
+const store = new ConnextStore(window.localStorage);
 ```
 
 For React-Native
@@ -28,12 +26,10 @@ For React-Native
 import ConnextStore from "connext-store";
 import AsyncStorage from "@react-native-community/async-storage";
 
-const store = new ConnextStore({
-  storage: AsyncStorage
-});
+const store = new ConnextStore(AsyncStorage);
 ```
 
-## Options
+## Advanced Options
 
 ```javascript
 import ConnextStore from "connext-store";
@@ -41,11 +37,13 @@ import AsyncStorage from "@react-native-community/async-storage";
 import PisaClient from "pisa-client";
 import ethers from "ethers";
 
-const store = new ConnextStore({
-  storage: window.localStorage || AsyncStorage, // REQUIRED
-  prefix: "CONNEXT_STORE",
-  separator: "/",
-  pisaClient: new PisaClient(pisaUrl, contractAddress),
-  wallet: new ethers.Wallet(privateKey)
-});
+const store = new ConnextStore(
+  window.localStorage || AsyncStorage, // REQUIRED
+  {
+    prefix: "CONNEXT_STORE",
+    separator: "/",
+    pisaClient: new PisaClient(pisaUrl, contractAddress),
+    wallet: new ethers.Wallet(privateKey)
+  }
+);
 ```
