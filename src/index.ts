@@ -34,12 +34,13 @@ export class ConnextStore {
   private prefix: string = DEFAULT_STORE_PREFIX;
   private separator: string = DEFAULT_STORE_SEPARATOR;
   private store: InternalStore = defaultStore;
-  private pisaClient: PisaClient | null;
-  private wallet: Wallet | null;
+  private pisaClient: PisaClient | null = null;
+  private wallet: Wallet | null = null;
 
   constructor(opts: StoreFactoryOptions = defaultStoreOptions) {
     this.prefix = opts.prefix || defaultStoreOptions.prefix;
     this.separator = opts.separator || defaultStoreOptions.separator;
+    this.store = opts.store || defaultStoreOptions.store;
     this.pisaClient = opts.pisaClient || defaultStoreOptions.pisaClient;
     this.wallet = opts.wallet || defaultStoreOptions.wallet;
   }
