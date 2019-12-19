@@ -1,1 +1,1 @@
-declare module "eth-parse-uri";
+declare module "connext-store";

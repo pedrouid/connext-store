@@ -1,3 +1,3 @@
-# eth-parse-uri
+# connext-store
 
-Parse Ethereum EIP831 standard URI formats (expandable)
+Connext Store Modules (expandable)

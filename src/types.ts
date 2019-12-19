@@ -10,6 +10,8 @@ export interface StorePair {
 }
 
 export interface StoreFactoryOptions {
-  pisaClient: IPisaClient;
-  wallet: Wallet;
+  prefix: string;
+  separator: string;
+  pisaClient: IPisaClient | null;
+  wallet: Wallet | null;
 }
