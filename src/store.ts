@@ -11,15 +11,15 @@ class InternalStore {
     this._store = setupStore(storage)
   }
 
-  async getStore (): Promise<Storage> {
+  getStore (): Storage {
     if (!this._store) {
       throw new Error('Store is not available')
     }
     return this._store
   }
 
-  async getItem (path: string): Promise<string | null> {
-    const store = await this.getStore()
+  getItem (path: string): string | null {
+    const store = this.getStore()
     let result = store.getItem(`${path}`)
     if (result) {
       result = safeJsonParse(result)
@@ -27,18 +27,23 @@ class InternalStore {
     return result
   }
 
-  async setItem (path: string, value: any): Promise<void> {
-    const store = await this.getStore()
+  setItem (path: string, value: any): void {
+    const store = this.getStore()
     store.setItem(`${path}`, safeJsonStringify(value))
   }
 
-  async getKeys (): Promise<string[]> {
-    const store = await this.getStore()
+  removeItem (path: string): void {
+    const store = this.getStore()
+    store.removeItem(`${path}`)
+  }
+
+  getKeys (): string[] {
+    const store = this.getStore()
     return Object.keys(store)
   }
 
-  async getEntries (): Promise<[string, any][]> {
-    const store = await this.getStore()
+  getEntries (): [string, any][] {
+    const store = this.getStore()
     return Object.entries(store)
   }
 }

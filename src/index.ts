@@ -41,7 +41,7 @@ export class ConnextStore {
 
   public async set (pairs: StorePair[], shouldBackup?: boolean) {
     for (const pair of pairs) {
-      await this.store.setItem(pair.path, pair.value)
+      this.store.setItem(pair.path, pair.value)
 
       if (
         shouldBackup &&
@@ -59,16 +59,16 @@ export class ConnextStore {
     // TODO: Should we also scrub legacy channel prefixes?
     const channelPrefix = `${this.prefix}${this.separator}`
     // get all keys in local storage that match prefix
-    const entries = await this.store.getEntries()
+    const entries = this.store.getEntries()
     entries.forEach(([key, value]: [string, any]) => {
       if (key.includes(channelPrefix)) {
-        localStorage.removeItem(key)
+        this.store.removeItem(key)
       }
     })
   }
 
   public async restore (): Promise<any[]> {
-    return this.pisaClient ? await this.pisaRestore() : []
+    return this.pisaClient ? this.pisaRestore() : []
   }
 
   /// ////////////////////////////////////////////
@@ -82,7 +82,7 @@ export class ConnextStore {
       path.endsWith(PATH_PROPOSED_APP_INSTANCE_ID)
     ) {
       const partialMatches = {}
-      const keys = await this.store.getKeys()
+      const keys = this.store.getKeys()
       for (const k of keys) {
         const pathToFind = `${path}${this.separator}`
         if (k.includes(pathToFind)) {
@@ -115,9 +115,9 @@ export class ConnextStore {
     return wallet.address
   }
 
-  private async getBlockNumber () {
+  private getBlockNumber (): Promise<number> {
     const wallet = this.getWallet()
-    return await wallet.provider.getBlockNumber()
+    return wallet.provider.getBlockNumber()
   }
 
   /// ////////////////////////////////////////////
