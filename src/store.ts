@@ -1,7 +1,13 @@
-import { safeJsonParse, safeJsonStringify } from './utils'
+import Storage from 'react-native-storage'
 
 function setupStore (storage: Storage) {
-  return storage
+  const store = new Storage({
+    defaultExpires: null,
+    enableCache: true,
+    size: 10000,
+    storageBackend: storage
+  })
+  return store
 }
 
 class InternalStore {
@@ -18,23 +24,20 @@ class InternalStore {
     return this._store
   }
 
-  getItem (path: string): string | null {
+  async getItem (key: string): Promise<string | null> {
     const store = this.getStore()
-    let result = store.getItem(`${path}`)
-    if (result) {
-      result = safeJsonParse(result)
-    }
+    let result = await store.load({ key })
     return result
   }
 
-  setItem (path: string, value: any): void {
+  async setItem (key: string, data: any): Promise<void> {
     const store = this.getStore()
-    store.setItem(`${path}`, safeJsonStringify(value))
+    await store.save({ key, data, expires: null })
   }
 
-  removeItem (path: string): void {
+  removeItem (key: string): void {
     const store = this.getStore()
-    store.removeItem(`${path}`)
+    store.remove({ key })
   }
 
   getKeys (): string[] {

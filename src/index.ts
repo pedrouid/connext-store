@@ -1,3 +1,4 @@
+import Storage from 'react-native-storage'
 import {
   DEFAULT_STORE_PREFIX,
   DEFAULT_STORE_SEPARATOR,
@@ -36,14 +37,14 @@ export class ConnextStore {
   }
 
   public async get (path: string) {
-    const raw = this.store.getItem(`${path}`)
+    const raw = await this.store.getItem(`${path}`)
     const partialMatches = await this.getPartialMatches(path)
     return partialMatches || raw
   }
 
   public async set (pairs: StorePair[], shouldBackup?: boolean) {
     for (const pair of pairs) {
-      this.store.setItem(pair.path, pair.value)
+      await this.store.setItem(pair.path, pair.value)
 
       if (
         shouldBackup &&
@@ -88,7 +89,8 @@ export class ConnextStore {
       for (const k of keys) {
         const pathToFind = `${path}${this.separator}`
         if (k.includes(pathToFind)) {
-          partialMatches[k.replace(pathToFind, '')] = this.store.getItem(k)
+          const value = await this.store.getItem(k)
+          partialMatches[k.replace(pathToFind, '')] = value
         }
       }
       return partialMatches

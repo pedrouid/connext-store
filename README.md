@@ -20,15 +20,25 @@ import ConnextStore from "connext-store";
 const store = new ConnextStore(window.localStorage);
 ```
 
+For React-Native
+
+```javascript
+import ConnextStore from "connext-store";
+import AsyncStorage from "@react-native-community/async-storage";
+
+const store = new ConnextStore(AsyncStorage);
+```
+
 ## Advanced Options
 
 ```javascript
 import ConnextStore from "connext-store";
+import AsyncStorage from "@react-native-community/async-storage";
 import PisaClient from "pisa-client";
 import ethers from "ethers";
 
 const store = new ConnextStore(
-  window.localStorage, // REQUIRED
+  window.localStorage || AsyncStorage, // REQUIRED
   {
     prefix: "CONNEXT_STORE",
     separator: "/",
