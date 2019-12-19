@@ -15,6 +15,5 @@ export interface StoreFactoryOptions {
   pisaClient?: IPisaClient | null
   prefix?: string
   separator?: string
-  storage: Storage
   wallet?: Wallet | null
 }
