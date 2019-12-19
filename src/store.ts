@@ -32,7 +32,7 @@ class InternalStore {
 
   async setItem (key: string, data: any): Promise<void> {
     const store = this.getStore()
-    await store.save({ key, data })
+    await store.save({ key, data, expires: null })
   }
 
   removeItem (key: string): void {
