@@ -42,11 +42,13 @@ class InternalStore {
 
   getKeys (): string[] {
     const store = this.getStore()
+    // TODO: refactor for react-native-storage API
     return Object.keys(store)
   }
 
   getEntries (): [string, any][] {
     const store = this.getStore()
+    // TODO: refactor for react-native-storage API
     return Object.entries(store)
   }
 }
