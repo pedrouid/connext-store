@@ -1,7 +1,7 @@
-import Storage from 'react-native-storage'
+import StorageWrapper from 'react-native-storage'
 
 function setupStore (storage: Storage) {
-  const store = new Storage({
+  const store = new StorageWrapper({
     defaultExpires: null,
     enableCache: true,
     size: 10000,
@@ -11,13 +11,13 @@ function setupStore (storage: Storage) {
 }
 
 class InternalStore {
-  private _store: Storage | undefined
+  private _store: StorageWrapper | undefined
 
   constructor (storage: Storage) {
     this._store = setupStore(storage)
   }
 
-  getStore (): Storage {
+  getStore (): StorageWrapper {
     if (!this._store) {
       throw new Error('Store is not available')
     }

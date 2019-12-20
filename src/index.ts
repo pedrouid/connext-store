@@ -1,4 +1,3 @@
-import Storage from 'react-native-storage'
 import {
   DEFAULT_STORE_PREFIX,
   DEFAULT_STORE_SEPARATOR,
@@ -17,7 +16,7 @@ import {
   toUtf8String
 } from './utils'
 
-export class ConnextStore {
+export default class ConnextStore {
   private store: InternalStore
 
   private prefix: string = DEFAULT_STORE_PREFIX
