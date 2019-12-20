@@ -1,54 +1,45 @@
-import StorageWrapper from 'react-native-storage'
-
-function setupStore (storage: Storage) {
-  const store = new StorageWrapper({
-    defaultExpires: null,
-    enableCache: true,
-    size: 10000,
-    storageBackend: storage
-  })
-  return store
-}
+import { safeJsonParse, safeJsonStringify } from './utils'
 
 class InternalStore {
-  private _store: StorageWrapper | undefined
+  private _store: Storage
 
   constructor (storage: Storage) {
-    this._store = setupStore(storage)
+    this._store = storage
   }
 
-  getStore (): StorageWrapper {
+  getStore (): Storage {
     if (!this._store) {
       throw new Error('Store is not available')
     }
     return this._store
   }
 
-  async getItem (key: string): Promise<string | null> {
+  getItem (path: string): string | null {
     const store = this.getStore()
-    let result = await store.load({ key })
+    let result = store.getItem(`${path}`)
+    if (result) {
+      result = safeJsonParse(result)
+    }
     return result
   }
 
-  async setItem (key: string, data: any): Promise<void> {
+  setItem (path: string, value: any): void {
     const store = this.getStore()
-    await store.save({ key, data, expires: null })
+    store.setItem(`${path}`, safeJsonStringify(value))
   }
 
-  removeItem (key: string): void {
+  removeItem (path: string): void {
     const store = this.getStore()
-    store.remove({ key })
+    store.removeItem(`${path}`)
   }
 
   getKeys (): string[] {
     const store = this.getStore()
-    // TODO: refactor for react-native-storage API
     return Object.keys(store)
   }
 
   getEntries (): [string, any][] {
     const store = this.getStore()
-    // TODO: refactor for react-native-storage API
     return Object.entries(store)
   }
 }

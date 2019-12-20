@@ -63,7 +63,6 @@
   },
   "dependencies": {
     "ethers": "4.0.40",
-    "pisa-client": "0.1.4-connext-beta.1",
-    "react-native-storage": "1.0.1"
+    "pisa-client": "0.1.4-connext-beta.1"
   }
 }

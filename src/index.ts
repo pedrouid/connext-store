@@ -36,14 +36,14 @@ export default class ConnextStore {
   }
 
   public async get (path: string) {
-    const raw = await this.store.getItem(`${path}`)
-    const partialMatches = await this.getPartialMatches(path)
+    const raw = this.store.getItem(`${path}`)
+    const partialMatches = this.getPartialMatches(path)
     return partialMatches || raw
   }
 
   public async set (pairs: StorePair[], shouldBackup?: boolean) {
     for (const pair of pairs) {
-      await this.store.setItem(pair.path, pair.value)
+      this.store.setItem(pair.path, pair.value)
 
       if (
         shouldBackup &&
@@ -76,7 +76,7 @@ export default class ConnextStore {
   /// ////////////////////////////////////////////
   /// // PRIVATE METHODS
 
-  private async getPartialMatches (path: string) {
+  private getPartialMatches (path: string) {
     // Handle partial matches so the following line works -.-
     // https://github.com/counterfactual/monorepo/blob/master/packages/node/src/store.ts#L54
     if (
@@ -88,7 +88,7 @@ export default class ConnextStore {
       for (const k of keys) {
         const pathToFind = `${path}${this.separator}`
         if (k.includes(pathToFind)) {
-          const value = await this.store.getItem(k)
+          const value = this.store.getItem(k)
           partialMatches[k.replace(pathToFind, '')] = value
         }
       }
