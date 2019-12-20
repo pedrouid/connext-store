@@ -1,6 +1,6 @@
 # connext-store
 
-Connext Store Modules
+Connext Store Module
 
 ## Install
 
