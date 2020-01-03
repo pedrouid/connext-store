@@ -1,4 +1,5 @@
 import { utils } from 'ethers'
+import AsyncStorageWrapper from './asyncStorage'
 
 export function arrayify (
   value: string | ArrayLike<number> | utils.Hexable
@@ -40,4 +41,20 @@ export function safeJsonParse (value: any): any {
 
 export function safeJsonStringify (value: any): string {
   return typeof value === 'string' ? value : JSON.stringify(value)
+}
+
+export function isAsyncStorage (storage: any) {
+  const key = '__react_native_storage_test'
+  const promiseTest = storage.setItem(key, 'test')
+  storage.removeItem(key)
+  return !!(promiseTest && promiseTest.then)
+}
+
+export function wrapAsyncStorage (asyncStorage: any): Storage {
+  const storage: Storage = new AsyncStorageWrapper(asyncStorage)
+  return storage
+}
+
+export function parseStorage (storage: any) {
+  return isAsyncStorage(storage) ? wrapAsyncStorage(storage) : storage
 }

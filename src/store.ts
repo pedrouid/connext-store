@@ -1,10 +1,10 @@
-import { safeJsonParse, safeJsonStringify } from './utils'
+import { safeJsonParse, safeJsonStringify, parseStorage } from './utils'
 
 class InternalStore {
   private _store: Storage
 
   constructor (storage: Storage) {
-    this._store = storage
+    this._store = parseStorage(storage)
   }
 
   getStore (): Storage {
