@@ -1,46 +1,56 @@
-import { safeJsonParse, safeJsonStringify } from './utils'
+import { safeJsonParse, safeJsonStringify, parseStorage } from './utils'
+import { StorageWrapper } from './types'
 
 class InternalStore {
-  private _store: Storage
+  private _store: StorageWrapper
+  private _channelPrefix: string
 
-  constructor (storage: Storage) {
-    this._store = storage
+  constructor (storage: StorageWrapper, channelPrefix: string) {
+    this._store = parseStorage(storage)
+    this._channelPrefix = channelPrefix
   }
 
-  getStore (): Storage {
+  async getStore (): Promise<StorageWrapper> {
     if (!this._store) {
       throw new Error('Store is not available')
     }
     return this._store
   }
 
-  getItem (path: string): string | null {
-    const store = this.getStore()
-    let result = store.getItem(`${path}`)
+  async getItem (path: string): Promise<string | null> {
+    const store = await this.getStore()
+    let result = await store.getItem(`${path}`)
     if (result) {
       result = safeJsonParse(result)
     }
     return result
   }
 
-  setItem (path: string, value: any): void {
-    const store = this.getStore()
-    store.setItem(`${path}`, safeJsonStringify(value))
+  async setItem (path: string, value: any): Promise<void> {
+    const store = await this.getStore()
+    await store.setItem(`${path}`, safeJsonStringify(value))
   }
 
-  removeItem (path: string): void {
-    const store = this.getStore()
-    store.removeItem(`${path}`)
+  async removeItem (path: string): Promise<void> {
+    const store = await this.getStore()
+    await store.removeItem(`${path}`)
   }
 
-  getKeys (): string[] {
-    const store = this.getStore()
-    return Object.keys(store)
+  async getKeys (): Promise<string[]> {
+    const store = await this.getStore()
+    const keys = await store.getKeys()
+    return keys
   }
 
-  getEntries (): [string, any][] {
-    const store = this.getStore()
-    return Object.entries(store)
+  async getEntries (): Promise<[string, any][]> {
+    const store = await this.getStore()
+    const entries = await store.getEntries()
+    return entries
+  }
+
+  async clear (): Promise<void> {
+    const store = await this.getStore()
+    await store.clear(this._channelPrefix)
   }
 }
 

@@ -17,3 +17,12 @@ export interface StoreFactoryOptions {
   separator?: string
   wallet?: Wallet | null
 }
+
+export interface StorageWrapper {
+  getItem(key: string): Promise<string | null>
+  setItem(key: string, value: string): Promise<void>
+  removeItem(key: string): Promise<void>
+  getKeys(): Promise<string[]>
+  getEntries(): Promise<[string, any][]>
+  clear(prefix: string): Promise<void>
+}
