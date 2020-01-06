@@ -1,6 +1,7 @@
 import { REACT_NATIVE_STORE } from './constants'
+import { StorageWrapper } from './types'
 
-class AsyncStorageWrapper implements Storage {
+class AsyncStorageWrapper implements StorageWrapper {
   private asyncStorage: any
   private data: any
   private initializing: boolean = false
@@ -10,35 +11,31 @@ class AsyncStorageWrapper implements Storage {
     this.init()
   }
 
-  get length () {
-    return this.data.length
-  }
-
   async init (): Promise<void> {
     this.initializing = true
     this.data = await this.asyncStorage.getItem(REACT_NATIVE_STORE)
     this.initializing = false
   }
 
-  isInitializing (): void {
+  async isInitializing (): Promise<void> {
     if (this.initializing) {
       throw new Error('AsyncStorage is still initializing')
     }
   }
 
-  getItem (key: string): string | null {
+  async getItem (key: string): Promise<string | null> {
     this.isInitializing()
     const result = this.data[`${key}`] || null
     return result
   }
 
-  setItem (key: string, value: string): void {
+  async setItem (key: string, value: string): Promise<void> {
     this.isInitializing()
     this.data[key] = value
     this.persist()
   }
 
-  removeItem (key: string): void {
+  async removeItem (key: string): Promise<void> {
     this.isInitializing()
     delete this.data[key]
     this.persist()
@@ -51,12 +48,16 @@ class AsyncStorageWrapper implements Storage {
     )
   }
 
-  clear = () => this.asyncStorage.removeItem(REACT_NATIVE_STORE)
+  async clear (): Promise<void> {
+    await this.asyncStorage.removeItem(REACT_NATIVE_STORE)
+  }
 
-  key (index: number): string | null {
-    this.isInitializing()
-    const result = this.data[index] || null
-    return result
+  async getKeys (): Promise<string[]> {
+    return Object.keys(this.data)
+  }
+
+  async getEntries (): Promise<[string, any][]> {
+    return Object.entries(this.data)
   }
 }
 

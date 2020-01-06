@@ -1,5 +1,7 @@
 import { utils } from 'ethers'
 import AsyncStorageWrapper from './asyncStorage'
+import { StorageWrapper } from './types'
+import LocalStorageWrapper from './localStorage'
 
 export function arrayify (
   value: string | ArrayLike<number> | utils.Hexable
@@ -50,11 +52,18 @@ export function isAsyncStorage (storage: any) {
   return !!(promiseTest && promiseTest.then)
 }
 
-export function wrapAsyncStorage (asyncStorage: any): Storage {
-  const storage: Storage = new AsyncStorageWrapper(asyncStorage)
+export function wrapAsyncStorage (asyncStorage: any): StorageWrapper {
+  const storage: StorageWrapper = new AsyncStorageWrapper(asyncStorage)
   return storage
 }
 
-export function parseStorage (storage: any) {
-  return isAsyncStorage(storage) ? wrapAsyncStorage(storage) : storage
+export function wrapLocalStorage (localStorage: any): StorageWrapper {
+  const storage: StorageWrapper = new LocalStorageWrapper(localStorage)
+  return storage
+}
+
+export function parseStorage (storage: any): StorageWrapper {
+  return isAsyncStorage(storage)
+    ? wrapAsyncStorage(storage)
+    : wrapLocalStorage(storage)
 }

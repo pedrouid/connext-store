@@ -13,7 +13,8 @@ import {
   safeJsonParse,
   safeJsonStringify,
   toUtf8Bytes,
-  toUtf8String
+  toUtf8String,
+  parseStorage
 } from './utils'
 
 export default class ConnextStore {
@@ -24,26 +25,30 @@ export default class ConnextStore {
   private pisaClient: PisaClient | null = null
   private wallet: Wallet | null = null
 
-  constructor (storage: Storage, opts?: StoreFactoryOptions) {
-    this.store = new InternalStore(storage)
-
+  constructor (storage: any, opts?: StoreFactoryOptions) {
     if (opts) {
       this.prefix = opts.prefix || DEFAULT_STORE_PREFIX
       this.separator = opts.separator || DEFAULT_STORE_SEPARATOR
       this.pisaClient = opts.pisaClient || null
       this.wallet = opts.wallet || null
     }
+
+    this.store = new InternalStore(parseStorage(storage), this.channelPrefix)
+  }
+
+  get channelPrefix (): string {
+    return `${this.prefix}${this.separator}`
   }
 
   public async get (path: string) {
-    const raw = this.store.getItem(`${path}`)
-    const partialMatches = this.getPartialMatches(path)
+    const raw = await this.store.getItem(`${path}`)
+    const partialMatches = await this.getPartialMatches(path)
     return partialMatches || raw
   }
 
   public async set (pairs: StorePair[], shouldBackup?: boolean) {
     for (const pair of pairs) {
-      this.store.setItem(pair.path, pair.value)
+      await this.store.setItem(pair.path, pair.value)
 
       if (
         shouldBackup &&
@@ -58,15 +63,7 @@ export default class ConnextStore {
   }
 
   public async reset (): Promise<void> {
-    // TODO: Should we also scrub legacy channel prefixes?
-    const channelPrefix = `${this.prefix}${this.separator}`
-    // get all keys in local storage that match prefix
-    const entries = this.store.getEntries()
-    entries.forEach(([key, value]: [string, any]) => {
-      if (key.includes(channelPrefix)) {
-        this.store.removeItem(key)
-      }
-    })
+    await this.store.clear()
   }
 
   public async restore (): Promise<any[]> {
@@ -76,7 +73,7 @@ export default class ConnextStore {
   /// ////////////////////////////////////////////
   /// // PRIVATE METHODS
 
-  private getPartialMatches (path: string) {
+  private async getPartialMatches (path: string) {
     // Handle partial matches so the following line works -.-
     // https://github.com/counterfactual/monorepo/blob/master/packages/node/src/store.ts#L54
     if (
@@ -84,11 +81,11 @@ export default class ConnextStore {
       path.endsWith(PATH_PROPOSED_APP_INSTANCE_ID)
     ) {
       const partialMatches = {}
-      const keys = this.store.getKeys()
+      const keys = await this.store.getKeys()
       for (const k of keys) {
         const pathToFind = `${path}${this.separator}`
         if (k.includes(pathToFind)) {
-          const value = this.store.getItem(k)
+          const value = await this.store.getItem(k)
           partialMatches[k.replace(pathToFind, '')] = value
         }
       }
