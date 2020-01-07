@@ -48,12 +48,13 @@ export function safeJsonStringify (value: any): string {
 export function isAsyncStorage (storage: any) {
   const key = '__react_native_storage_test'
   const promiseTest = storage.setItem(key, 'test')
-  storage.removeItem(key)
-  return !!(
+  const result = !!(
     typeof promiseTest !== 'undefined' &&
     typeof promiseTest.then !== 'undefined' &&
     typeof storage.length === 'undefined'
   )
+  storage.removeItem(key)
+  return result
 }
 
 export function wrapAsyncStorage (asyncStorage: any): StorageWrapper {
