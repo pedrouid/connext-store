@@ -1,5 +1,6 @@
 import { REACT_NATIVE_STORE } from './constants'
 import { StorageWrapper } from './types'
+import { safeJsonStringify } from './utils'
 
 class AsyncStorageWrapper implements StorageWrapper {
   private asyncStorage: any
@@ -17,11 +18,17 @@ class AsyncStorageWrapper implements StorageWrapper {
       if (this.initializing) {
         this.onInit((x: any) => resolve(x))
       } else {
-        this.initializing = true
-        this.data = await this.asyncStorage.getItem(REACT_NATIVE_STORE)
-        this.initializing = false
-        this.triggerInit(this.data)
-        resolve(this.data)
+        try {
+          this.initializing = true
+          const data = await this.fetch()
+          this.data = data
+          this.initializing = false
+          this.triggerInit(data)
+          resolve(data)
+        } catch (e) {
+          this.initializing = false
+          reject(e)
+        }
       }
     })
   }
@@ -57,8 +64,12 @@ class AsyncStorageWrapper implements StorageWrapper {
   async persist (): Promise<void> {
     await this.asyncStorage.setItem(
       REACT_NATIVE_STORE,
-      JSON.stringify(this.data)
+      safeJsonStringify(this.data)
     )
+  }
+
+  async fetch (): Promise<any> {
+    return (await this.asyncStorage.getItem(REACT_NATIVE_STORE)) || {}
   }
 
   async clear (): Promise<void> {
