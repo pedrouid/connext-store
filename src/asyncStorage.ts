@@ -5,40 +5,53 @@ class AsyncStorageWrapper implements StorageWrapper {
   private asyncStorage: any
   private data: any
   private initializing: boolean = false
+  private initCallbacks: any[] = []
 
   constructor (asyncStorage: any) {
     this.asyncStorage = asyncStorage
-    this.init()
+    this.loadData()
   }
 
-  async init (): Promise<void> {
-    this.initializing = true
-    this.data = await this.asyncStorage.getItem(REACT_NATIVE_STORE)
-    this.initializing = false
+  loadData () {
+    return new Promise(async (resolve, reject) => {
+      if (this.initializing) {
+        this.onInit((x: any) => resolve(x))
+      } else {
+        this.initializing = true
+        this.data = await this.asyncStorage.getItem(REACT_NATIVE_STORE)
+        this.initializing = false
+        this.triggerInit(this.data)
+        resolve(this.data)
+      }
+    })
   }
 
-  async isInitializing (): Promise<void> {
-    if (this.initializing) {
-      throw new Error('AsyncStorage is still initializing')
+  onInit (callback: any) {
+    this.initCallbacks.push(callback)
+  }
+
+  triggerInit (result: any) {
+    if (this.initCallbacks && this.initCallbacks.length) {
+      this.initCallbacks.forEach(callback => callback(result))
     }
   }
 
   async getItem (key: string): Promise<string | null> {
-    this.isInitializing()
+    await this.loadData()
     const result = this.data[`${key}`] || null
     return result
   }
 
   async setItem (key: string, value: string): Promise<void> {
-    this.isInitializing()
+    await this.loadData()
     this.data[key] = value
-    this.persist()
+    await this.persist()
   }
 
   async removeItem (key: string): Promise<void> {
-    this.isInitializing()
+    await this.loadData()
     delete this.data[key]
-    this.persist()
+    await this.persist()
   }
 
   async persist (): Promise<void> {
