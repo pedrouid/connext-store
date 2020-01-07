@@ -1,6 +1,6 @@
 import { utils } from 'ethers'
-import AsyncStorageWrapper from './asyncStorage'
 import { StorageWrapper } from './types'
+import AsyncStorageWrapper from './asyncStorage'
 import LocalStorageWrapper from './localStorage'
 
 export function arrayify (
@@ -49,7 +49,11 @@ export function isAsyncStorage (storage: any) {
   const key = '__react_native_storage_test'
   const promiseTest = storage.setItem(key, 'test')
   storage.removeItem(key)
-  return !!(promiseTest && promiseTest.then)
+  return !!(
+    typeof promiseTest !== 'undefined' &&
+    typeof promiseTest.then !== 'undefined' &&
+    typeof storage.length === 'undefined'
+  )
 }
 
 export function wrapAsyncStorage (asyncStorage: any): StorageWrapper {
