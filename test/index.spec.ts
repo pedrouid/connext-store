@@ -12,17 +12,14 @@ describe('// ----------------- connext-store ----------------- //', () => {
   describe('ConnextStore', () => {
     it('returns same value', () => {
       const store = new ConnextStore(window.localStorage)
-
       const path = 'testing'
       const value = 'something'
-
       store.set([{ path, value }])
-
       const result = store.get(path)
-
       expect(result).to.be.equal(value)
     })
   })
+
   describe('isAsyncStorage', () => {
     it('returns false for localStorage', () => {
       const result = isAsyncStorage(window.localStorage)
