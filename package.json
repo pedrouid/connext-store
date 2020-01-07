@@ -9,10 +9,13 @@
     "check": "npm run clean && npm run build"
   },
   "keywords": [
-    "ethereum",
-    "parser",
-    "uri",
-    "standard"
+    "connext",
+    "store",
+    "localStorage",
+    "asyncStorage",
+    "react-native",
+    "browser",
+    "cross-platform"
   ],
   "author": "Pedro Gomes <github.com/pedrouid>",
   "license": "MIT",
