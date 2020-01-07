@@ -1,12 +1,12 @@
 import { REACT_NATIVE_STORE } from './constants'
-import { StorageWrapper } from './types'
-import { safeJsonStringify } from './utils'
+import { AsyncStorageData, InitCallback, StorageWrapper } from './types'
+import { safeJsonStringify, safeJsonParse } from './utils'
 
 class AsyncStorageWrapper implements StorageWrapper {
   private asyncStorage: any
-  private data: any
+  private data: AsyncStorageData = {}
   private initializing: boolean = false
-  private initCallbacks: any[] = []
+  private initCallbacks: InitCallback[] = []
 
   constructor (asyncStorage: any) {
     this.asyncStorage = asyncStorage
@@ -16,15 +16,14 @@ class AsyncStorageWrapper implements StorageWrapper {
   loadData () {
     return new Promise(async (resolve, reject) => {
       if (this.initializing) {
-        this.onInit((x: any) => resolve(x))
+        this.onInit(x => resolve(x))
       } else {
         try {
           this.initializing = true
-          const data = await this.fetch()
-          this.data = data
+          this.data = await this.fetch()
           this.initializing = false
-          this.triggerInit(data)
-          resolve(data)
+          resolve(this.data)
+          this.triggerInit(this.data)
         } catch (e) {
           this.initializing = false
           reject(e)
@@ -33,13 +32,13 @@ class AsyncStorageWrapper implements StorageWrapper {
     })
   }
 
-  onInit (callback: any) {
+  onInit (callback: InitCallback) {
     this.initCallbacks.push(callback)
   }
 
-  triggerInit (result: any) {
+  triggerInit (data: AsyncStorageData) {
     if (this.initCallbacks && this.initCallbacks.length) {
-      this.initCallbacks.forEach(callback => callback(result))
+      this.initCallbacks.forEach(callback => callback(data))
     }
   }
 
@@ -68,8 +67,9 @@ class AsyncStorageWrapper implements StorageWrapper {
     )
   }
 
-  async fetch (): Promise<any> {
-    return (await this.asyncStorage.getItem(REACT_NATIVE_STORE)) || {}
+  async fetch (): Promise<AsyncStorageData> {
+    const data = await this.asyncStorage.getItem(REACT_NATIVE_STORE)
+    return safeJsonParse(data) || {}
   }
 
   async clear (): Promise<void> {

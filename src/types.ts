@@ -4,6 +4,12 @@ import { PisaClient as IPisaClient } from 'pisa-client'
 export type PisaClient = IPisaClient
 export type Wallet = ethers.Wallet
 
+export type InitCallback = (data: AsyncStorageData) => void
+
+export interface AsyncStorageData {
+  [key: string]: any
+}
+
 export interface StorePair {
   path: string
   value: any
