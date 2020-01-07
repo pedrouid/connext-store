@@ -67,7 +67,7 @@ export function wrapLocalStorage (localStorage: any): StorageWrapper {
   return storage
 }
 
-export function parseStorage (storage: any): StorageWrapper {
+export function wrapStorage (storage: any): StorageWrapper {
   return isAsyncStorage(storage)
     ? wrapAsyncStorage(storage)
     : wrapLocalStorage(storage)

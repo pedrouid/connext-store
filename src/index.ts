@@ -13,8 +13,7 @@ import {
   safeJsonParse,
   safeJsonStringify,
   toUtf8Bytes,
-  toUtf8String,
-  parseStorage
+  toUtf8String
 } from './utils'
 
 export default class ConnextStore {
@@ -33,7 +32,7 @@ export default class ConnextStore {
       this.wallet = opts.wallet || null
     }
 
-    this.store = new InternalStore(parseStorage(storage), this.channelPrefix)
+    this.store = new InternalStore(storage, this.channelPrefix)
   }
 
   get channelPrefix (): string {
