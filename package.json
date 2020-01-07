@@ -6,7 +6,7 @@
     "clean": "rm -rf lib",
     "build": "webpack",
     "test": "mocha --require ./babel-polyfill.js --require mock-local-storage test/**/*.spec.ts",
-    "check": "npm run clean && npm run build && npm run test"
+    "check": "npm run clean && npm run build"
   },
   "keywords": [
     "ethereum",
