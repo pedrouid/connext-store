@@ -2,25 +2,38 @@
 
 import { expect } from 'chai'
 
-import ConnextStore from '../src/index'
+import './mock/localStorage'
+import AsyncStorage from './mock/asyncStorage'
 
-declare global {
-  interface Window {
-    localStorage: Storage
-  }
-}
+import ConnextStore from '../src/index'
+import { isAsyncStorage } from '../src/utils'
 
 describe('// ----------------- connext-store ----------------- //', () => {
-  it('returns same value', () => {
-    const store = new ConnextStore(window.localStorage)
+  describe('ConnextStore', () => {
+    it('returns same value', () => {
+      const store = new ConnextStore(window.localStorage)
 
-    const path = 'testing'
-    const value = 'something'
+      const path = 'testing'
+      const value = 'something'
 
-    store.set([{ path, value }])
+      store.set([{ path, value }])
 
-    const result = store.get(path)
+      const result = store.get(path)
 
-    expect(result).to.be.equal(value)
+      expect(result).to.be.equal(value)
+    })
+  })
+  describe('isAsyncStorage', () => {
+    it('returns false for localStorage', () => {
+      const result = isAsyncStorage(window.localStorage)
+      const expected = false
+      expect(result).to.be.equal(expected)
+    })
+
+    it('returns true for AsyncStorage', () => {
+      const result = isAsyncStorage(AsyncStorage)
+      const expected = true
+      expect(result).to.be.equal(expected)
+    })
   })
 })

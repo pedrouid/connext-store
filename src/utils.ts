@@ -45,7 +45,7 @@ export function safeJsonStringify (value: any): string {
   return typeof value === 'string' ? value : JSON.stringify(value)
 }
 
-export function isAsyncStorage (storage: any) {
+export function isAsyncStorage (storage: any): boolean {
   const key = '__react_native_storage_test'
   const promiseTest = storage.setItem(key, 'test')
   const result = !!(
