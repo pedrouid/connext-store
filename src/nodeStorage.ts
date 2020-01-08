@@ -1,5 +1,6 @@
 import fs from 'fs'
 import { AsyncStorage } from './types'
+import { DEFAULT_NODE_FILE_EXTENSION } from './constants'
 
 export function fsRead (path: string): Promise<any> {
   return new Promise((resolve, reject) => {
@@ -35,13 +36,25 @@ export function fsUnlink (path: string): Promise<void> {
 }
 
 export class NodeStorage implements AsyncStorage {
+  private fileExtension: string = DEFAULT_NODE_FILE_EXTENSION
+
+  constructor (fileExtension?: string) {
+    this.fileExtension = fileExtension || DEFAULT_NODE_FILE_EXTENSION
+  }
+
+  getFilePath (key: string) {
+    return `${key}${this.fileExtension}`
+  }
   async setItem (key: string, data: any) {
-    return fsWrite(key, data)
+    const path = this.getFilePath(key)
+    return fsWrite(path, data)
   }
   async getItem (key: string) {
-    return fsRead(key)
+    const path = this.getFilePath(key)
+    return fsRead(path)
   }
   async removeItem (key: string) {
-    return fsUnlink(key)
+    const path = this.getFilePath(key)
+    return fsUnlink(path)
   }
 }

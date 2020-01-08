@@ -1,5 +1,5 @@
 import { utils } from 'ethers'
-import { StorageWrapper } from './types'
+import { StorageWrapper, AsyncStorage } from './types'
 import AsyncStorageWrapper from './asyncStorage'
 import LocalStorageWrapper from './localStorage'
 
@@ -58,7 +58,7 @@ export function isAsyncStorage (storage: any): boolean {
 }
 
 export function wrapAsyncStorage (
-  asyncStorage: any,
+  asyncStorage: AsyncStorage,
   asyncDataKey?: string
 ): StorageWrapper {
   const storage: StorageWrapper = new AsyncStorageWrapper(
@@ -68,7 +68,7 @@ export function wrapAsyncStorage (
   return storage
 }
 
-export function wrapLocalStorage (localStorage: any): StorageWrapper {
+export function wrapLocalStorage (localStorage: Storage): StorageWrapper {
   const storage: StorageWrapper = new LocalStorageWrapper(localStorage)
   return storage
 }
