@@ -32,7 +32,7 @@ const store = new ConnextStore(AsyncStorage);
 For NodeJS
 
 ```javascript
-import ConnextStore, { NodeStorag } from "connext-store";
+import ConnextStore, { NodeStorage } from "connext-store";
 
 const store = new ConnextStore(new NodeStorage());
 ```
