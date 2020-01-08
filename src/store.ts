@@ -5,8 +5,8 @@ class InternalStore {
   private _store: StorageWrapper
   private _channelPrefix: string
 
-  constructor (storage: any, channelPrefix: string) {
-    this._store = wrapStorage(storage)
+  constructor (storage: any, channelPrefix: string, asyncDataKey?: string) {
+    this._store = wrapStorage(storage, asyncDataKey)
     this._channelPrefix = channelPrefix
   }
 

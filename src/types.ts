@@ -6,6 +6,12 @@ export type Wallet = ethers.Wallet
 
 export type InitCallback = (data: AsyncStorageData) => void
 
+export interface AsyncStorage {
+  getItem(key: string): Promise<string | null>
+  setItem(key: string, value: string): Promise<void>
+  removeItem(key: string): Promise<void>
+}
+
 export interface AsyncStorageData {
   [key: string]: any
 }
@@ -21,6 +27,7 @@ export interface StoreFactoryOptions {
   pisaClient?: IPisaClient | null
   prefix?: string
   separator?: string
+  asyncDataKey?: string
   wallet?: Wallet | null
 }
 

@@ -15,7 +15,8 @@
     "asyncStorage",
     "react-native",
     "browser",
-    "cross-platform"
+    "cross-platform",
+    "nodejs"
   ],
   "author": "Pedro Gomes <github.com/pedrouid>",
   "license": "MIT",

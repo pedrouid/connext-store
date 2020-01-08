@@ -2,7 +2,8 @@ import {
   DEFAULT_STORE_PREFIX,
   DEFAULT_STORE_SEPARATOR,
   PATH_CHANNEL,
-  PATH_PROPOSED_APP_INSTANCE_ID
+  PATH_PROPOSED_APP_INSTANCE_ID,
+  DEFAULT_ASYNC_DATA_KEY
 } from './constants'
 import InternalStore from './store'
 import { PisaClient, StoreFactoryOptions, StorePair, Wallet } from './types'
@@ -16,11 +17,14 @@ import {
   toUtf8String
 } from './utils'
 
+export { NodeStorage } from './nodeStorage'
+
 export default class ConnextStore {
   private store: InternalStore
 
   private prefix: string = DEFAULT_STORE_PREFIX
   private separator: string = DEFAULT_STORE_SEPARATOR
+  private asyncDataKey: string = DEFAULT_ASYNC_DATA_KEY
   private pisaClient: PisaClient | null = null
   private wallet: Wallet | null = null
 
@@ -28,11 +32,16 @@ export default class ConnextStore {
     if (opts) {
       this.prefix = opts.prefix || DEFAULT_STORE_PREFIX
       this.separator = opts.separator || DEFAULT_STORE_SEPARATOR
+      this.asyncDataKey = opts.asyncDataKey || DEFAULT_ASYNC_DATA_KEY
       this.pisaClient = opts.pisaClient || null
       this.wallet = opts.wallet || null
     }
 
-    this.store = new InternalStore(storage, this.channelPrefix)
+    this.store = new InternalStore(
+      storage,
+      this.channelPrefix,
+      this.asyncDataKey
+    )
   }
 
   get channelPrefix (): string {

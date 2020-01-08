@@ -57,8 +57,14 @@ export function isAsyncStorage (storage: any): boolean {
   return result
 }
 
-export function wrapAsyncStorage (asyncStorage: any): StorageWrapper {
-  const storage: StorageWrapper = new AsyncStorageWrapper(asyncStorage)
+export function wrapAsyncStorage (
+  asyncStorage: any,
+  asyncDataKey?: string
+): StorageWrapper {
+  const storage: StorageWrapper = new AsyncStorageWrapper(
+    asyncStorage,
+    asyncDataKey
+  )
   return storage
 }
 
@@ -67,8 +73,11 @@ export function wrapLocalStorage (localStorage: any): StorageWrapper {
   return storage
 }
 
-export function wrapStorage (storage: any): StorageWrapper {
+export function wrapStorage (
+  storage: any,
+  asyncDataKey?: string
+): StorageWrapper {
   return isAsyncStorage(storage)
-    ? wrapAsyncStorage(storage)
+    ? wrapAsyncStorage(storage, asyncDataKey)
     : wrapLocalStorage(storage)
 }
