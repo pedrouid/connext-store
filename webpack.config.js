@@ -14,6 +14,9 @@ module.exports = {
     umdNamedDefine: true,
     globalObject: 'this'
   },
+  externals: {
+    fs: 'fs'
+  },
   resolve: {
     extensions: ['.ts', '.tsx', '.js']
   },
