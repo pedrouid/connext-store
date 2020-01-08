@@ -29,19 +29,28 @@ import ConnextStore from "connext-store";
 const store = new ConnextStore(AsyncStorage);
 ```
 
+For NodeJS
+
+```javascript
+import ConnextStore, { NodeStorage } from "connext-store";
+
+const store = new ConnextStore(new NodeStorage());
+```
+
 ## Advanced Options
 
 ```javascript
 import AsyncStorage from "@react-native-community/async-storage";
-import ConnextStore from "connext-store";
+import ConnextStore, { NodeStorage } from "connext-store";
 import PisaClient from "pisa-client";
 import ethers from "ethers";
 
 const store = new ConnextStore(
-  window.localStorage || AsyncStorage, // REQUIRED
+  window.localStorage || AsyncStorage || new NodeStorage(), // REQUIRED
   {
-    prefix: "CONNEXT_STORE",
+    prefix: "INDRA_CLIENT_CF_CORE",
     separator: "/",
+    asyncDataKey: "CONNEXT_STORE",
     pisaClient: new PisaClient(pisaUrl, contractAddress),
     wallet: new ethers.Wallet(privateKey)
   }
