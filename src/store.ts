@@ -1,11 +1,11 @@
 import { safeJsonParse, safeJsonStringify, wrapStorage } from './utils'
-import { StorageWrapper } from './types'
+import { StorageWrapper, AsyncStorage } from './types'
 
 class InternalStore {
   private _store: StorageWrapper
   private _channelPrefix: string
 
-  constructor (storage: any, channelPrefix: string) {
+  constructor (storage: Storage | AsyncStorage, channelPrefix: string) {
     this._store = wrapStorage(storage)
     this._channelPrefix = channelPrefix
   }

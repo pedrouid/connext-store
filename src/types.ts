@@ -32,3 +32,43 @@ export interface StorageWrapper {
   getEntries(): Promise<[string, any][]>
   clear(prefix: string): Promise<void>
 }
+
+// Source: https://github.com/react-native-community/async-storage/blob/LEGACY/types/index.d.ts
+export interface AsyncStorage {
+  getItem(
+    key: string,
+    callback?: (error?: Error, result?: string) => void
+  ): Promise<string | null>
+  setItem(
+    key: string,
+    value: string,
+    callback?: (error?: Error) => void
+  ): Promise<void>
+  removeItem(key: string, callback?: (error?: Error) => void): Promise<void>
+  mergeItem(
+    key: string,
+    value: string,
+    callback?: (error?: Error) => void
+  ): Promise<void>
+  clear(callback?: (error?: Error) => void): Promise<void>
+  getAllKeys(
+    callback?: (error?: Error, keys?: string[]) => void
+  ): Promise<string[]>
+
+  multiSet(
+    keyValuePairs: string[][],
+    callback?: (errors?: Error[]) => void
+  ): Promise<void>
+  multiRemove(
+    keys: string[],
+    callback?: (errors?: Error[]) => void
+  ): Promise<void>
+  multiMerge(
+    keyValuePairs: string[][],
+    callback?: (errors?: Error[]) => void
+  ): Promise<void>
+  multiGet(
+    keys: string[],
+    callback?: (errors?: Error[], result?: [string, string | null][]) => void
+  ): Promise<[string, string | null][]>
+}

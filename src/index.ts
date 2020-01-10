@@ -5,7 +5,13 @@ import {
   PATH_PROPOSED_APP_INSTANCE_ID
 } from './constants'
 import InternalStore from './store'
-import { PisaClient, StoreFactoryOptions, StorePair, Wallet } from './types'
+import {
+  PisaClient,
+  StoreFactoryOptions,
+  StorePair,
+  Wallet,
+  AsyncStorage
+} from './types'
 import {
   arrayify,
   hexlify,
@@ -24,7 +30,7 @@ export default class ConnextStore {
   private pisaClient: PisaClient | null = null
   private wallet: Wallet | null = null
 
-  constructor (storage: any, opts?: StoreFactoryOptions) {
+  constructor (storage: Storage | AsyncStorage, opts?: StoreFactoryOptions) {
     if (opts) {
       this.prefix = opts.prefix || DEFAULT_STORE_PREFIX
       this.separator = opts.separator || DEFAULT_STORE_SEPARATOR
